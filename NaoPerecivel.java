@@ -1,7 +1,7 @@
 /**
  * Classe que representa um produto Não Perecível.
  */
-public class NaoPerecivel extends Produto {
+public class NaoPerecivel extends Alimenticio {
     private String tipoDeArmazenamento;
 
     /**
@@ -13,8 +13,8 @@ public class NaoPerecivel extends Produto {
      * @param peso Peso do produto em gramas.
      * @param tipoDeArmazenamento Tipo de armazenamento do produto.
      */
-    public NaoPerecivel(int codigo, String nome, String fabricante, int peso, String tipoDeArmazenamento) {
-        super(codigo, nome, fabricante, peso);
+    public NaoPerecivel(int codigo, String nome, String fabricante, int peso, long validade, String tipoDeArmazenamento) {
+        super(codigo, nome, fabricante, peso, validade);
         this.tipoDeArmazenamento = tipoDeArmazenamento;
     }
 
