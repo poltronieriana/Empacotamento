@@ -1,7 +1,7 @@
 /**
  * Classe que representa um Alimento, que é um tipo de Perecível.
  */
-public class Alimento extends Perecivel {
+public class Alimenticio extends Produto {
     private long validade;
 
     /**
@@ -13,7 +13,7 @@ public class Alimento extends Perecivel {
      * @param peso Peso do produto em gramas.
      * @param validade Validade do alimento em dias.
      */
-    public Alimento(int codigo, String nome, String fabricante, int peso, long validade) {
+    public Alimenticio(int codigo, String nome, String fabricante, int peso, long validade) {
         super(codigo, nome, fabricante, peso);
         this.validade = validade;
     }
@@ -36,7 +36,7 @@ public class Alimento extends Perecivel {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!super.equals(o)) return false;
-        Alimento alimento = (Alimento) o;
+        Alimenticio alimento = (Alimenticio) o;
         return validade == alimento.validade;
     }
 }
