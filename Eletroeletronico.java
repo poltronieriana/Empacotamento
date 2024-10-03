@@ -1,7 +1,7 @@
 /**
  * Classe que representa um produto Eletroeletrônico, que é um tipo de Não Perecível.
  */
-public class Eletroeletronico extends NaoPerecivel {
+public class Eletroeletronico extends Produto {
     private short tensao;
 
     /**
@@ -11,11 +11,10 @@ public class Eletroeletronico extends NaoPerecivel {
      * @param nome Nome do produto.
      * @param fabricante Fabricante do produto.
      * @param peso Peso do produto em gramas.
-     * @param tipoDeArmazenamento Tipo de armazenamento do produto.
      * @param tensao Tensão elétrica (110V, 220V).
      */
-    public Eletroeletronico(int codigo, String nome, String fabricante, int peso, String tipoDeArmazenamento, short tensao) {
-        super(codigo, nome, fabricante, peso, tipoDeArmazenamento);
+    public Eletroeletronico(int codigo, String nome, String fabricante, int peso, short tensao) {
+        super(codigo, nome, fabricante, peso);
         this.tensao = tensao;
     }
 
