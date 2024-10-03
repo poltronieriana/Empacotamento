@@ -1,7 +1,7 @@
 /**
  * Classe que representa um produto Perecível.
  */
-public class Perecivel extends Produto {
+public class Perecivel extends Alimenticio {
 
     /**
      * Construtor para a classe Perecivel.
@@ -11,8 +11,11 @@ public class Perecivel extends Produto {
      * @param fabricante Fabricante do produto.
      * @param peso Peso do produto em gramas.
      */
-    public Perecivel(int codigo, String nome, String fabricante, int peso) {
-        super(codigo, nome, fabricante, peso);
+
+
+
+    public Perecivel(int codigo, String nome, String fabricante, int peso, long validade) {
+        super(codigo, nome, fabricante, peso, validade);
     }
 
     @Override
