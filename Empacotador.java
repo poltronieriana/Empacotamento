@@ -39,12 +39,9 @@ public class Empacotador {
                         if (!produtoJaNaSacola(sacola, produto)) {
                             sacola.colocarProdutoNaSacola(produto); // Adiciona o produto à sacola
                             caixa.pegarProdutoDoMonte(produto); // Remove o produto do monte
-                            System.out.println("Produto " + produto + " empacotado na sacola " + (i + 1));
                             produtoEmpacotado = true;
                             break; // Produto empacotado, pode sair do loop de sacolas
                         }
-                    } else {
-                        System.out.println("Sacola cheia, produto não adicionado");
                     }
                 }
             }
@@ -56,7 +53,6 @@ public class Empacotador {
                     Sacola novaSacola = caixa.getSacola(indiceNovaSacola); // Pega uma nova sacola vazia
                     novaSacola.colocarProdutoNaSacola(produto); // Adiciona o produto à nova sacola
                     caixa.pegarProdutoDoMonte(produto); // Remove o produto do monte
-                    System.out.println("Produto " + produto + " colocado em nova sacola " + indiceNovaSacola);
                 }
             }
         }
@@ -77,7 +73,6 @@ public class Empacotador {
             if (sacola != null) {
                 int pesoTotal = calcularPesoTotal(sacola);
                 if (pesoTotal >= PESO_MINIMO) {
-                    System.out.println("Sacola despachada com peso: " + pesoTotal);
                     fiscal.despachar(sacola); // Despacha sacola
                     caixa.despacharSacola(i + 1); // Remove a sacola do caixa
                 }
@@ -93,54 +88,44 @@ public class Empacotador {
         Produto[] produtosNaSacola = sacola.getArrayDaSacola();
 
         for (Produto p : produtosNaSacola) {
-            // Verifica se os produtos são compatíveis entre si
-            if (!saoProdutosCompatíveis(p, produto)) {
-                System.out.println("Produtos incompatíveis: " + p + " e " + produto);
-                return false; // Produtos de categorias diferentes são incompatíveis
+            if (!saoProdutosCompativeis(p, produto)) {
+                return false;
             }
         }
-        return true; // Produto compatível
+        return true;
     }
 
     /**
      * Verifica se dois produtos são compatíveis.
-     * Essa verificação pode ser feita usando instanceof para verificar a categoria do produto.
      */
-    private boolean saoProdutosCompatíveis(Produto p1, Produto p2) {
-        // Alimentos, Perecíveis e Não Perecíveis podem ser misturados entre si
-        if ((p1 instanceof Alimenticio || p1 instanceof Perecivel || p1 instanceof NaoPerecivel) &&
-                (p2 instanceof Alimenticio || p2 instanceof Perecivel || p2 instanceof NaoPerecivel)) {
-            return true; // Produtos alimentícios podem ser misturados
-        }
-
-        // Produtos de Limpeza não podem ser misturados com Alimentícios
-        if (p1 instanceof Limpeza && p2 instanceof Alimenticio) {
-            return false;
-        }
-        if (p2 instanceof Limpeza && p1 instanceof Alimenticio) {
-            return false;
-        }
-
-        // Refrigerados só podem ser misturados com outros Refrigerados
-        if (p1 instanceof Refrigerado && !(p2 instanceof Refrigerado)) {
-            return false;
-        }
-        if (p2 instanceof Refrigerado && !(p1 instanceof Refrigerado)) {
-            return false;
-        }
-
-        // Produtos Eletroeletrônicos devem ser embalados sozinhos
+    private boolean saoProdutosCompativeis(Produto p1, Produto p2) {
         if (p1 instanceof Eletroeletronico || p2 instanceof Eletroeletronico) {
             return false; // Produtos eletroeletrônicos não podem ser misturados
         }
 
-        // Se chegou aqui, os produtos são considerados compatíveis
+        if (p1 instanceof CuidadosPessoais && p2 instanceof Alimenticio ||
+                p2 instanceof CuidadosPessoais && p1 instanceof Alimenticio) {
+            return false; // Cuidados pessoais e alimentícios não podem ser misturados
+        }
+
+        if (p1 instanceof Limpeza && (p2 instanceof Alimenticio || p2 instanceof CuidadosPessoais || p2 instanceof Eletroeletronico) ||
+                p2 instanceof Limpeza && (p1 instanceof Alimenticio || p1 instanceof CuidadosPessoais || p1 instanceof Eletroeletronico)) {
+            return false; // Produtos de limpeza não podem ser misturados com alimentícios, cuidados pessoais ou eletroeletrônicos
+        }
+
+        if (p1 instanceof Refrigerado && p2 instanceof Refrigerado) {
+            return Math.abs(((Refrigerado) p1).getTemperaturaIdeal() - ((Refrigerado) p2).getTemperaturaIdeal()) <= 15;
+        }
+
+        if (p1 instanceof Refrigerado || p2 instanceof Refrigerado) {
+            return false; // Produtos refrigerados só podem ser misturados com outros refrigerados
+        }
+
         return true;
     }
 
     /**
      * Calcula o peso total dos produtos na sacola.
-     * Usa o método getArrayDaSacola() da classe Sacola.
      */
     private int calcularPesoTotal(Sacola sacola) {
         Produto[] produtosNaSacola = sacola.getArrayDaSacola();
@@ -155,9 +140,6 @@ public class Empacotador {
 
     /**
      * Verifica se um produto já está na sacola usando hashCode.
-     * @param sacola a sacola onde o produto está sendo verificado
-     * @param produto o produto a ser verificado
-     * @return true se o produto já está na sacola, false caso contrário
      */
     private boolean produtoJaNaSacola(Sacola sacola, Produto produto) {
         Produto[] produtosNaSacola = sacola.getArrayDaSacola();
@@ -171,8 +153,6 @@ public class Empacotador {
 
     /**
      * Encontra o índice de uma sacola vazia no caixa.
-     * @param caixa o caixa onde as sacolas são procuradas
-     * @return o índice de uma sacola vazia ou -1 se não houver
      */
     private int getIndiceSacolaVazia(Caixa caixa) {
         for (int i = 0; i < Caixa.QUANTIDADE_DE_SACOLAS_NO_CAIXA; i++) {
@@ -180,6 +160,6 @@ public class Empacotador {
                 return i + 1;
             }
         }
-        return -1; // Não encontrou sacolas vazias
+        return -1;
     }
 }
