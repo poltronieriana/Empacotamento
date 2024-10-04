@@ -1,4 +1,3 @@
-package estudantes.entidades;
 
 /**
  * Classe que define um produto no supermercado.
@@ -12,7 +11,7 @@ package estudantes.entidades;
  * 4) ter um JavaDoc útil e completo.
  * <br><br>
  * <strong>Não devem ser criados métodos adicionais nessa classe.</strong>
- * 
+ *
  * @author Jean Cheiran
  * @version 1.0
  */
@@ -27,6 +26,8 @@ public class Produto {
         this.fabricante = fabricante;
         this.peso = peso;
     }
+
+
     public int getCodigo() {
         return codigo;
     }
@@ -41,7 +42,7 @@ public class Produto {
     }
     @Override
     public String toString() {
-        return return "Produto{" +
+        return  "Produto{" +
                 "codigo='" + codigo + '\'' +
                 ", nome=" + nome + '\'' +
                 ", fabricante=" + fabricante + '\'' +
@@ -59,27 +60,29 @@ public class Produto {
         return result;
     }
     @Override
-    public boolean equals(Object obj) {
-            //qualquer coisa é diferente de NULL
-            if(outro == null){
-                return false;
-            }
-            //propriedade REFLEXIVA
-            if(this == outro){
-                return true;
-            }
-            //objetos de classes diferentes nunca são iguais
-            if(this.getClass() != outro.getClass()){
-                return false;
-            }
-            //conversão explícita para acessar os atributos do outro carro
-            Carro outroCarro = (Carro) outro;
-            //verifica se todos os atributos são iguais
-            if(this.nome.equals(outroProduto.nome) && this.fabricante.equals(outroProduto.fabricante)
-                    && this.codigo == codigo && this.peso == peso){
-                return true;
-            }else{
-                return false;
-            }
+    public boolean equals(Object o) {
+        //qualquer coisa é diferente de NULL
+        if(o == null){
+            return false;
+        }
+        //propriedade REFLEXIVA
+        if(this == o){
+            return true;
+        }
+        //objetos de classes diferentes nunca são iguais
+        if(this.getClass() != o.getClass()){
+            return false;
+        }
+        //conversão explícita para acessar os atributos do outro carro
+        Produto outroProduto = (Produto) o;
+        //verifica se todos os atributos são iguais
+        if(this.nome.equals(outroProduto.nome) &&
+                this.fabricante.equals(outroProduto.fabricante) &&
+                this.peso == outroProduto.peso &&
+                this.codigo == outroProduto.codigo){
+            return true;
+        }else{
+            return false;
         }
     }
+}
