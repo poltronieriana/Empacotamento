@@ -12,6 +12,7 @@ public class Empacotador {
 
     public int proximoCaixa = 1; // usada para saber para onde o empacotador deve ir
     private final int PESO_MINIMO = 1000; // 1kg para o despacho de sacolas
+    private final int PESO_MAXIMO = 5000; // 5kg é o limite de peso por sacola
 
     /**
      * Executa a lógica de empacotamento e troca de caixa.
@@ -32,22 +33,30 @@ public class Empacotador {
             for (int i = 0; i < Caixa.QUANTIDADE_DE_SACOLAS_NO_CAIXA; i++) {
                 Sacola sacola = caixa.getSacola(i + 1);
                 if (sacola != null && verificarCompatibilidade(sacola, produto)) {
-                    // Verifica se o produto já está na sacola usando hashCode
-                    if (!produtoJaNaSacola(sacola, produto)) {
-                        sacola.colocarProdutoNaSacola(produto); // Adiciona o produto à sacola
-                        caixa.pegarProdutoDoMonte(produto); // Remove o produto do monte
-                        produtoEmpacotado = true;
+                    // Verifica o peso total da sacola antes de adicionar o produto
+                    int pesoTotalAtual = calcularPesoTotal(sacola);
+                    if (pesoTotalAtual + produto.getPeso() <= PESO_MAXIMO) {
+                        if (!produtoJaNaSacola(sacola, produto)) {
+                            sacola.colocarProdutoNaSacola(produto); // Adiciona o produto à sacola
+                            caixa.pegarProdutoDoMonte(produto); // Remove o produto do monte
+                            System.out.println("Produto " + produto + " empacotado na sacola " + (i + 1));
+                            produtoEmpacotado = true;
+                            break; // Produto empacotado, pode sair do loop de sacolas
+                        }
+                    } else {
+                        System.out.println("Sacola cheia, produto não adicionado");
                     }
-                    break; // Produto empacotado, pode sair do loop de sacolas
                 }
             }
 
             // Se o produto não couber em nenhuma sacola existente, cria uma nova
             if (!produtoEmpacotado) {
-                Sacola novaSacola = caixa.getSacola(getIndiceSacolaVazia(caixa)); // Pega uma nova sacola vazia
-                if (novaSacola != null) {
+                int indiceNovaSacola = getIndiceSacolaVazia(caixa);
+                if (indiceNovaSacola != -1) {
+                    Sacola novaSacola = caixa.getSacola(indiceNovaSacola); // Pega uma nova sacola vazia
                     novaSacola.colocarProdutoNaSacola(produto); // Adiciona o produto à nova sacola
                     caixa.pegarProdutoDoMonte(produto); // Remove o produto do monte
+                    System.out.println("Produto " + produto + " colocado em nova sacola " + indiceNovaSacola);
                 }
             }
         }
@@ -55,7 +64,7 @@ public class Empacotador {
         // Despacha sacolas que têm pelo menos 1kg
         despacharSacolas(caixa, fiscal);
 
-        // Atualiza o próximo caixa
+        // Troca para o próximo caixa ao final
         proximoCaixa = (proximoCaixa % Supermercado.QUANTIDADE_DE_CAIXAS_NO_SUPERMERCADO) + 1;
     }
 
@@ -68,9 +77,9 @@ public class Empacotador {
             if (sacola != null) {
                 int pesoTotal = calcularPesoTotal(sacola);
                 if (pesoTotal >= PESO_MINIMO) {
+                    System.out.println("Sacola despachada com peso: " + pesoTotal);
                     fiscal.despachar(sacola); // Despacha sacola
                     caixa.despacharSacola(i + 1); // Remove a sacola do caixa
-                    caixa.reporSacolas(); // Garante que as sacolas despachadas sejam repostas
                 }
             }
         }
@@ -86,6 +95,7 @@ public class Empacotador {
         for (Produto p : produtosNaSacola) {
             // Verifica se os produtos são compatíveis entre si
             if (!saoProdutosCompatíveis(p, produto)) {
+                System.out.println("Produtos incompatíveis: " + p + " e " + produto);
                 return false; // Produtos de categorias diferentes são incompatíveis
             }
         }
